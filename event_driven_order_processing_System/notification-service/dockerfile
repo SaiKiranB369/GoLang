@@ -1,0 +1,20 @@
+FROM golang:1.23.6
+
+WORKDIR /app
+
+# Copy go.mod and go.sum from the root directory
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy the common package
+COPY common/ ./common/
+
+# Copy the rest of the application code
+COPY notification-service/ ./
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -o notification-service .
+
+CMD ["./notification-service"]
